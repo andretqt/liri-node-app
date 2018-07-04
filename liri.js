@@ -1,6 +1,5 @@
 require("dotenv").config();
 var moment = require('moment')
-var request = require('request');
 var keys = require('./keys.js');
 var fs = require("fs");
 //--------------------
@@ -37,26 +36,43 @@ var spotifyThisSong = function(song) {
     var Spotify = require('node-spotify-api');
     var spotify = new Spotify(keys.spotify);
     if (song === undefined) {
-        spotifyThisSong('The Sign')
-    } else {
-        spotify.search({ type: 'track', query: song }, function(err, data) {
-            if (err) {
-              return console.log('Error occurred: ' + err);
-            }
-        var bestResult = data.tracks.items[0]; 
-        var artist = bestResult.artists[0].name;
-        var title = bestResult.name;
-        var album = bestResult.album.name;
-        var link = bestResult.external_urls.spotify;
-        console.log(`Artist: ${artist}\nSong Title: ${title}\nAppears on: ${album}\nListen: ${link}`);
-        });
-    };
+        song = 'The Sign';
+    }
+    spotify.search({ type: 'track', query: song }, function(err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+    var bestResult = data.tracks.items[0]; 
+    var artist = bestResult.artists[0].name;
+    var title = bestResult.name;
+    var album = bestResult.album.name;
+    var link = bestResult.external_urls.spotify;
+    console.log(`Artist: ${artist}\nSong Title: ${title}\nAppears on: ${album}\nListen: ${link}`);
+    });
+}
+var movieThis = function(movie) {
+    var bodyParser = require('body-parser');
+    var request = require('request');
+    if (movie === undefined) {
+        movie = 'Mr. Nobody';
+    }
+    request('http://www.omdbapi.com/?apikey=trilogy&t='+ movie, function(error, response, body) {
+        if (error) {
+            return console.log('Error occurred: ' + error);
+        };
+        var parsedResponse = JSON.parse(body);
+        console.log(`Title: ${parsedResponse.Title}\nRelease Year: ${parsedResponse.Year}\nIMDB Rating: ${parsedResponse.imdbRating}\nRottenTomatoes Rating: ${parsedResponse.Ratings[1].Value}\nCountry Of Production: ${parsedResponse.Country}\nLanguage: ${parsedResponse.Language}\nPlot: ${parsedResponse.Plot}\nCast: ${parsedResponse.Actors}\n`);
+    });
 }
 // App functionality due to user input
 if(command === "my-tweets") {
 	myTweets();
-} else if (command === 'spotify-this-song' ) {
+}
+else if (command === 'spotify-this-song') {
     spotifyThisSong(query);
+}
+else if (command == 'movie-this') {
+    movieThis(query);
 }
 else { // use case where command is given but not recognized
 	console.log("Command not recognized! Please try again.")
