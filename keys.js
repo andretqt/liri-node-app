@@ -1,4 +1,3 @@
-console.log('this is loaded');
 
 exports.twitter = {
   consumer_key: 'YwdnQIlKpqD7wTT1o19xQb6EO',
@@ -8,6 +7,6 @@ exports.twitter = {
 };
 
 exports.spotify = {
-  id: process.env.SPOTIFY_ID,
-  secret: process.env.SPOTIFY_SECRET
+  id: 'ea27b19c20d045af98f70305235442cb',
+  secret: '1721cd520d5346ba996247615caf0d15'
 };

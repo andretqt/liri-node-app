@@ -1,12 +1,11 @@
 require("dotenv").config();
 var moment = require('moment')
 var request = require('request');
-// var Spotify = require('node-spotify-api');
 var keys = require('./keys.js');
 var fs = require("fs");
-// var spotify = new Spotify(keys.spotify);
 //--------------------
 var command = process.argv[2];
+var query = process.argv.slice(3);
 
 //defining our functions
 var myTweets = function () {
@@ -34,10 +33,31 @@ var myTweets = function () {
 	  }
 	);
 }
-
+var spotifyThisSong = function(song) {
+    var Spotify = require('node-spotify-api');
+    var spotify = new Spotify(keys.spotify);
+    if (song === undefined) {
+        spotifyThisSong('The Sign')
+    } else {
+        spotify.search({ type: 'track', query: song }, function(err, data) {
+            if (err) {
+              return console.log('Error occurred: ' + err);
+            }
+        var bestResult = data.tracks.items[0]; 
+        var artist = bestResult.artists[0].name;
+        var title = bestResult.name;
+        var album = bestResult.album.name;
+        var link = bestResult.external_urls.spotify;
+        console.log(`Artist: ${artist}\nSong Title: ${title}\nAppears on: ${album}\nListen: ${link}`);
+        });
+    };
+}
 // App functionality due to user input
 if(command === "my-tweets") {
 	myTweets();
-} else { // use case where command is given but not recognized
+} else if (command === 'spotify-this-song' ) {
+    spotifyThisSong(query);
+}
+else { // use case where command is given but not recognized
 	console.log("Command not recognized! Please try again.")
 };
