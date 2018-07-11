@@ -39,12 +39,9 @@ var myTweets = function () {
 var spotifyThisSong = function(song) {
     var Spotify = require('node-spotify-api');
     var spotify = new Spotify(keys.spotify);
-    if (song === undefined) {
-        song = 'The Sign';
-    }
     spotify.search({ type: 'track', query: song }, function(err, data) {
         if (err) {
-            return console.log('Error occurred: ' + err);
+            console.log('Error occurred: ' + err);
         }
     var bestResult = data.tracks.items[0]; 
     var artist = bestResult.artists[0].name;
@@ -59,7 +56,6 @@ var spotifyThisSong = function(song) {
     });
 }
 var movieThis = function(movie) {
-    var bodyParser = require('body-parser');
     var request = require('request');
     if (movie === undefined) {
         movie = 'Mr. Nobody';
@@ -101,13 +97,19 @@ var doIt = function() {
 }
 // App functionality due to user input
 if(command === "my-tweets") {
-	myTweets();
+    myTweets();
 }
-else if (command === 'spotify-this-song') {
+else if (command === 'spotify-this-song' && query.length >= 1) {
     spotifyThisSong(query);
 }
-else if (command == 'movie-this') {
+else if (command === 'spotify-this-song' && query.length < 1) {
+    spotifyThisSong('Plug Walk');
+}
+else if (command == 'movie-this' && query.length >= 1) {
     movieThis(query);
+}
+else if (command == 'movie-this' && query.length < 1) {
+    movieThis('Mr. Nobody');
 }
 else if (command === 'do-what-it-says') {
     doIt();
